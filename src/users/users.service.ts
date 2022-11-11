@@ -1,24 +1,44 @@
 import { Injectable } from '@nestjs/common';
-
-// This should be a real class/interface representing a user entity
-export type User = any;
+import { InjectModel } from '@nestjs/sequelize';
+import { UserCreateDto } from './dto/user-create.dto';
+import { UserDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-    private readonly users = [
-        {
-            userId: 1,
-            username: 'john',
-            password: 'changeme',
-        },
-        {
-            userId: 2,
-            username: 'maria',
-            password: 'guess',
-        },
-    ];
+    constructor(
+        @InjectModel(User) private userModel: typeof User
+    ) { }
 
-    async findOne(username: string): Promise<User | undefined> {
-        return this.users.find(user => user.username === username);
+    async create(dto: UserCreateDto): Promise<UserDto | undefined> {
+        const saveUser = new User();
+        saveUser.nameSurname = dto.nameSurname;
+        const createdUser = await saveUser.save();
+        return UserDto.from(createdUser);
+    }
+
+    async findOne(email: string): Promise<User | undefined> {
+        return this.userModel.findOne({ where: { email } });
+    }
+
+
+    async userExists(email: string): Promise<boolean | undefined> {
+        return false;
+    }
+
+    async getByEmail(email: string) {
+        if (!email) {
+            return null;
+        }
+
+        const user = await this.userModel.findOne({
+            where: {
+                email: email.toLowerCase(),
+            },
+        });
+
+        if (!user) return null;
+
+        return UserDto.from(user);
     }
 }
