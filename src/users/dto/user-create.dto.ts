@@ -1,31 +1,23 @@
 import { IsNotEmpty, ValidatorConstraint, MaxLength, IsEmail, ValidatorConstraintInterface, ValidationOptions, registerDecorator } from 'class-validator';
 import { UsersService } from '../users.service';
 import { Injectable } from '@nestjs/common';
-
-export class UserCreateDto {
-
-    @MaxLength(50)
-    @IsNotEmpty()
-    nameSurname: string;
-
-    @IsEmail()
-    @IsEmailUserAlreadyExist({
-        message: 'geçersiz email girdiniz.',
-    })
-    email: string;
-
-    photo: string;
-}
-
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from '../entities/user.entity';
 
 @ValidatorConstraint({ name: 'isEmailUserAlreadyExist', async: true })
 @Injectable()
 export class IsEmailUserAlreadyExistConstraint
     implements ValidatorConstraintInterface {
-    constructor(protected readonly usersService: UsersService) { }
+    constructor(@InjectModel(User) private userModel: typeof User) { }
 
     async validate(text: string) {
-        return !(await this.usersService.userExists(text));
+        const user = await this.userModel.findOne({
+            where: {
+                email: text.toLowerCase(),
+            },
+        });
+
+        return !true;
     }
 }
 
@@ -40,3 +32,20 @@ export function IsEmailUserAlreadyExist(validationOptions?: ValidationOptions) {
         });
     };
 }
+
+export class UserCreateDto {
+
+    @MaxLength(50)
+    @IsNotEmpty()
+    nameSurname: string;
+
+    @IsEmail()
+    email: string;
+
+    photo: string;
+
+    @IsNotEmpty()
+    password: string;
+}
+
+

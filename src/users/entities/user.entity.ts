@@ -20,6 +20,11 @@ export class User extends Model implements AuditableModel {
     nameSurname: string;
 
     @Column
+    password: string;
+
+    @Column({
+        unique: true,
+    })
     email: string;
 
     @Column

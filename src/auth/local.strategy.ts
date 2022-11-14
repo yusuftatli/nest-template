@@ -1,19 +1,33 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private authService: AuthService) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
+    constructor(private usersService: UsersService,
+        private jwtTokenService: JwtService) {
         super();
     }
 
     async validate(username: string, password: string): Promise<any> {
-        const user = await this.authService.validateUser(username, password);
-        if (!user) {
-            throw new UnauthorizedException();
+        const user = await this.usersService.findOne(username);
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (user) {
+            if (!validPassword)
+                throw new UnauthorizedException();
+            const { password, ...result } = user;
+            return result;
         }
-        return user;
+        throw new UnauthorizedException();
+    }
+
+    async loginWithCredentials(user: any) {
+        const payload = { username: user.username, sub: user.userId };
+        return {
+            access_token: this.jwtTokenService.sign(payload),
+        };
     }
 }
