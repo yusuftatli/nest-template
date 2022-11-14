@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     }
 
     async validate(username: string, password: string): Promise<any> {
-        const user = await this.usersService.findOne(username);
+        const user = await this.usersService.loginByEmail(username);
         const validPassword = await bcrypt.compare(password, user.password);
         if (user) {
             if (!validPassword)
@@ -25,7 +25,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     }
 
     async loginWithCredentials(user: any) {
-        const payload = { username: user.username, sub: user.userId };
+        const payload = { username: user.username, id: user.userId };
         return {
             access_token: this.jwtTokenService.sign(payload),
         };

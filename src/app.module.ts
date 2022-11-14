@@ -12,6 +12,7 @@ import * as fs from "fs";
 import { join } from "path";
 import { SequelizeModule, SequelizeModuleOptions } from "@nestjs/sequelize";
 import { ConfigService } from '@nestjs/config';
+import { JobsModule } from './jobs/jobs.module';
 
 const getSequelizeOptions = (
   configService: ConfigService
@@ -64,7 +65,7 @@ const getDatabasePassword = (configService: ConfigService): string => {
     useFactory: (configService: ConfigService) =>
       getSequelizeOptions(configService),
     inject: [ConfigService],
-  }), UsersModule],
+  }), UsersModule, JobsModule],
 
   controllers: [AppController],
   providers: [AppService],

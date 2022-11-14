@@ -45,6 +45,9 @@ export class UserCreateDto {
     photo: string;
 
     @IsNotEmpty()
+    jobId: string;
+
+    @IsNotEmpty()
     password: string;
 }
 

@@ -6,7 +6,7 @@ export class AuthService {
     constructor(private jwtTokenService: JwtService) { }
 
     async loginWithCredentials(user: any) {
-        const payload = { nameSurname: user.dataValues.nameSurname, sub: user.dataValues.id, email: user.dataValues.email };
+        const payload = { nameSurname: user.dataValues.nameSurname, id: user.dataValues.id, email: user.dataValues.email };
 
         return {
             ...payload,

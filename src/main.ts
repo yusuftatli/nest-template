@@ -10,6 +10,7 @@ import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-win
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import express from 'express';
 
 export interface ValidationPipeOptions extends ValidatorOptions {
   transform?: boolean;
