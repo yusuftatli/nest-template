@@ -10,7 +10,6 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
-    // @UseGuards(JwtAuthGuard)
     @Post()
     async post(@Body() dto: UserCreateDto) {
         return this.usersService.create(dto);
@@ -22,7 +21,6 @@ export class UsersController {
         return this.usersService.changePasswordByEmail(email, dto);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Put('/forget-password/:email')
     async forgetPassword(@Param('email') email: string) {
         return this.usersService.forgetPassword(email);

@@ -1,4 +1,3 @@
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieSession from 'cookie-session';
@@ -6,7 +5,10 @@ import * as passport from 'passport';
 import { ValidationError, ValidatorOptions } from 'class-validator';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ServiceExceptionFilter } from './common/filters/service-exception-filter';
-import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -19,7 +21,11 @@ export interface ValidationPipeOptions extends ValidatorOptions {
 }
 
 const initSwagger = (app: INestApplication) => {
-  const config = new DocumentBuilder().setTitle('Tingoss API').setDescription('Tingoss API documentation').setVersion('1.0').build();
+  const config = new DocumentBuilder()
+    .setTitle('Tingoss API')
+    .setDescription('Tingoss API documentation')
+    .setVersion('1.0')
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 };

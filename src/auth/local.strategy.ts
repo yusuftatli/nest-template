@@ -12,8 +12,8 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
         super();
     }
 
-    async validate(username: string, password: string): Promise<any> {
-        const user = await this.usersService.loginByEmail(username);
+    async validate(email: string, password: string): Promise<any> {
+        const user = await this.usersService.loginByEmail(email.toLocaleLowerCase());
         const validPassword = await bcrypt.compare(password, user.password);
         if (user) {
             if (!validPassword)
